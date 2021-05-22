@@ -1,3 +1,5 @@
+import pytest
+
 from wechat.wechat_data import TestWe
 
 
@@ -7,30 +9,32 @@ class TestWechat:
         self.wechat.get_token()
 
     def test_search(self):
+        # 获取所有标签
         r = self.wechat.test_search()
         # 断言json体里的["errcode"] == 0
         assert r.json()["errcode"] == 0
 
-    def test_add(self):
-        __group = "组名"
-        __nam = "表情1"
-        r = self.wechat.test_add(__group, __nam)
+    @pytest.mark.parametrize("group,nam", [["测试", "试点5"]])
+    def test_add(self, group, nam):
+        r = self.wechat.test_add(group, nam)
         # 断言json体里的["errcode"] == 0
         assert r.json()["errcode"] == 0
-        # 断言json体里的["group_name"] == "组名"
-        assert r.json()["tag_group"]["group_name"] == "组名"
+        # 断言json体里的["group_name"] == "测试"
+        assert r.json()["tag_group"]["group_name"] == "测试"
 
-    def test_delete(self):
-        __del_id = "etxlQuEAAAWyZRfHNLBxnBhP3Goh2drA"
-        r = self.wechat.test_delete(__del_id)
+    @pytest.mark.parametrize("del_id", [["etxlQuEAAAd5W209w3rFSRfiDnvODdOQ"]])
+    def test_delete(self, del_id):
+        # __del_id = "etxlQuEAAAWyZRfHNLBxnBhP3Goh2drA"
+        r = self.wechat.test_delete(del_id)
         # 断言json体里的["errcode"] == 0
         assert r.json()["errcode"] == 0
         # 断言json体里的["errmsg"] == "ok"
         assert r.json()["errmsg"] == "ok"
 
-    def test_edit(self):
-        __test_id = "etxlQuEAAAGTgm3bHEgiE4J-bKDDpUlw"
-        __test_name = "美女"
-        r = self.wechat.test_edit(__test_id, __test_name)
+    @pytest.mark.parametrize("test_id,test_name", [["etxlQuEAAAz6N5Ely_RcMu6-2ratl8Ow", "哈哈"]])
+    def test_edit(self, test_id, test_name):
+        # __test_id = "etxlQuEAAAGTgm3bHEgiE4J-bKDDpUlw"
+        # __test_name = "美女"
+        r = self.wechat.test_edit(test_id, test_name)
         # 断言json体里的["errcode"] == 0
         assert r.json()["errcode"] == 0
